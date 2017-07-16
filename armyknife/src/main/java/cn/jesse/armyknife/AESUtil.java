@@ -8,11 +8,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -36,8 +38,9 @@ import cn.jesse.armyknife.exception.GenerateKeyException;
 
 public class AESUtil {
     private static final String TAG = AESUtil.class.getSimpleName();
+    private static final String STRING_CHARSET = "utf-8";
     private static final String ALGORITHM = "AES";
-    private static String transformation = "AES/CFB8/NoPadding";
+    private static String transformation = "AES/CBC/PKCS5Padding";
     private static final int CACHE_SIZE = 1024;
     private static final byte[] IV_PARAMETER = {0xA, 1, 0xB, 5, 4, 0xF, 7, 9, 0x17, 3, 1, 6, 8, 0xC, 0xD, 91};
     private static IvParameterSpec ivParameterSpec = new IvParameterSpec(IV_PARAMETER);
@@ -87,13 +90,13 @@ public class AESUtil {
 
     /**
      * 根据key加密byte数组
-     * @param key 加密所需的key
+     * @param key 加密所需的key byte[]
      * @param data 待加密的byte[]
      * @return 加密之后的byte[]
      * @throws EncryptException
      */
-    public static byte[] encrypt(String key, byte[] data) throws EncryptException{
-        Key k = new SecretKeySpec(Base64Util.decode(key), ALGORITHM);
+    public static byte[] encrypt(byte[] key, byte[] data) throws EncryptException{
+        Key k = new SecretKeySpec(paddingKey(key), ALGORITHM);
         byte[] raw = k.getEncoded();
         byte[] encrypted;
         SecretKeySpec secretKeySpec = new SecretKeySpec(raw, ALGORITHM);
@@ -117,13 +120,13 @@ public class AESUtil {
 
     /**
      * 根据key解密byte数组
-     * @param key 解密所需的key
+     * @param key 解密所需的key byte[]
      * @param data 待解密数据
      * @return 解密后的byte[]
      * @throws DecryptException
      */
-    public static byte[] decrypt(String key, byte[] data) throws DecryptException {
-        Key k = new SecretKeySpec(Base64Util.decode(key), ALGORITHM);
+    public static byte[] decrypt(byte[] key, byte[] data) throws DecryptException {
+        Key k = new SecretKeySpec(paddingKey(key), ALGORITHM);
         byte[] raw = k.getEncoded();
         byte[] decrypted;
         SecretKeySpec secretKeySpec = new SecretKeySpec(raw, ALGORITHM);
@@ -145,6 +148,31 @@ public class AESUtil {
         return decrypted;
     }
 
+    public static String encrypt(byte[] key, String val) throws EncryptException {
+        byte[] encrypted;
+        try {
+            encrypted = encrypt(key, val.getBytes(STRING_CHARSET));
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, e.getMessage(), e);
+            throw new EncryptException(e.getMessage(), e.getCause());
+        }
+        return ByteUtil.bytesToHexString(encrypted);
+    }
+
+    public static String decrypt(byte[] key, String val) throws DecryptException {
+        byte[] decrypted = decrypt(key, ByteUtil.hexStringToBytes(val));
+
+
+        String decryptedString;
+        try {
+            decryptedString = new String(decrypted, STRING_CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, e.getMessage(), e);
+            throw new DecryptException(e.getMessage(), e.getCause());
+        }
+        return decryptedString;
+    }
+
     /**
      * 根据key 对文件进行加密
      * @param key 加密key
@@ -152,7 +180,7 @@ public class AESUtil {
      * @param destFilePath 加密成功文件路径
      * @throws EncryptException
      */
-    public static void encryptFile(String key, String sourceFilePath, String destFilePath) throws EncryptException{
+    public static void encrypt(byte[] key, String sourceFilePath, String destFilePath) throws EncryptException{
         File sourceFile = new File(sourceFilePath);
         File destFile = new File(destFilePath);
 
@@ -171,7 +199,7 @@ public class AESUtil {
             destFile.createNewFile();
             in = new FileInputStream(sourceFile);
             out = new FileOutputStream(destFile);
-            Key k = new SecretKeySpec(Base64Util.decode(key), ALGORITHM);
+            Key k = new SecretKeySpec(paddingKey(key), ALGORITHM);
             byte[] raw = k.getEncoded();
             SecretKeySpec secretKeySpec = new SecretKeySpec(raw, ALGORITHM);
             Cipher cipher = Cipher.getInstance(transformation);
@@ -204,7 +232,7 @@ public class AESUtil {
      * @param destFilePath 解密成功文件路径
      * @throws DecryptException
      */
-    public static void decryptFile(String key, String sourceFilePath, String destFilePath) throws DecryptException {
+    public static void decrypt(byte[] key, String sourceFilePath, String destFilePath) throws DecryptException {
         File sourceFile = new File(sourceFilePath);
         File destFile = new File(destFilePath);
 
@@ -224,7 +252,7 @@ public class AESUtil {
             destFile.createNewFile();
             in = new FileInputStream(sourceFile);
             out = new FileOutputStream(destFile);
-            Key k = new SecretKeySpec(Base64Util.decode(key), ALGORITHM);
+            Key k = new SecretKeySpec(paddingKey(key), ALGORITHM);
             byte[] raw = k.getEncoded();
             SecretKeySpec secretKeySpec = new SecretKeySpec(raw, ALGORITHM);
             Cipher cipher = Cipher.getInstance(transformation);
@@ -248,6 +276,25 @@ public class AESUtil {
             IOUtil.close(out);
             IOUtil.close(in);
         }
+    }
+
+    /**
+     * 当key的位数不足16位时, 自动补充0
+     * @param keyBytes key
+     * @return key
+     */
+    private static byte[] paddingKey(byte[] keyBytes) {
+        int base = 16;
+        byte[] bytes = keyBytes;
+
+        if (keyBytes.length % base != 0) {
+            int groups = keyBytes.length / base + (keyBytes.length % base != 0 ? 1 : 0);
+            byte[] temp = new byte[groups * base];
+            Arrays.fill(temp, (byte) 0);
+            System.arraycopy(keyBytes, 0, temp, 0, keyBytes.length);
+            bytes = temp;
+        }
+        return bytes;
     }
 
 }
