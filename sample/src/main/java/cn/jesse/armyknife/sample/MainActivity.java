@@ -6,6 +6,7 @@ import android.util.Log;
 
 import cn.jesse.armyknife.AESUtil;
 import cn.jesse.armyknife.ByteUtil;
+import cn.jesse.armyknife.MD5Util;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,6 +14,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        boolean isStringMatch = MD5Util.compareMD5("a123456", "dc483e80a7a0bd9ef71d8cf973673924");
+        Log.i("MD5", "is string match " + isStringMatch);
+        boolean isMatch = MD5Util.compareFileMD5("/storage/emulated/0/Download/tmp.html",
+                "c429fa4fdfb1c2ed9742e1ea6c1225ee");
+        Log.i("MD5", "is file match " + isMatch);
+    }
+
+    private void aes() {
         try {
             String key = "0D0D0D0A0D0D0D0A0000000000000000";
             AESUtil.setTransformation("AES/CBC/PKCS7Padding");
