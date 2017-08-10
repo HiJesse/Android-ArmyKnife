@@ -17,7 +17,7 @@ public class MainThreadUtil {
     }
 
     public static synchronized MainThreadUtil getInstance() {
-        if(mInstance == null) {
+        if (mInstance == null) {
             mInstance = new MainThreadUtil();
         }
         return mInstance;
@@ -25,6 +25,7 @@ public class MainThreadUtil {
 
     /**
      * 将runnable 对象post 进主线程执行
+     *
      * @param runnable 带执行对象
      */
     public void execute(Runnable runnable) {
@@ -33,6 +34,7 @@ public class MainThreadUtil {
 
     /**
      * 当前运行进程是否为主进程
+     *
      * @return
      */
     public boolean isMainThread() {

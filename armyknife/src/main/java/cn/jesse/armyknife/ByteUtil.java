@@ -2,6 +2,8 @@ package cn.jesse.armyknife;
 
 import android.text.TextUtils;
 
+import cn.jesse.armyknife.exception.UnsupportedOperationException;
+
 /**
  * byte相关工具
  * Created by jesse on 16/07/2017.
@@ -9,15 +11,16 @@ import android.text.TextUtils;
 
 public class ByteUtil {
     private ByteUtil() {
-        // unused
+        throw new UnsupportedOperationException("cannot be instantiated");
     }
 
     /**
      * 转换byte[] 为 hex String
+     *
      * @param src source byte[]
      * @return String
      */
-    public static String bytesToHexString(byte[] src){
+    public static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder("");
         if (src == null || src.length <= 0) {
             return null;
@@ -35,6 +38,7 @@ public class ByteUtil {
 
     /**
      * 转换hex String 为 byte[]
+     *
      * @param hexString String
      * @return byte[]
      */
@@ -52,8 +56,10 @@ public class ByteUtil {
         }
         return d;
     }
+
     /**
      * char 转化为byte
+     *
      * @param c char
      * @return byte
      */

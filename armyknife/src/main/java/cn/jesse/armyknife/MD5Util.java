@@ -10,6 +10,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import cn.jesse.armyknife.exception.UnsupportedOperationException;
+
 /**
  * MD5相关工具
  * Created by jesse on 18/07/2017.
@@ -19,11 +21,12 @@ public class MD5Util {
     private static final String TAG = MD5Util.class.getSimpleName();
 
     private MD5Util() {
-        // unused
+        throw new UnsupportedOperationException("cannot be instantiated");
     }
 
     /**
      * 获取字符串MD5
+     *
      * @param str 待加密字符串
      * @return 加密后md5
      */
@@ -42,6 +45,7 @@ public class MD5Util {
 
     /**
      * 获取文件MD5
+     *
      * @param filePath 文件路径
      * @return 文件MD5
      */
@@ -70,8 +74,9 @@ public class MD5Util {
 
     /**
      * 校验文件的md5是否匹配
+     *
      * @param filePath 文件路径
-     * @param md5 预匹配的md5
+     * @param md5      预匹配的md5
      * @return 是否匹配
      */
     public static boolean compareFileMD5(String filePath, String md5) {
@@ -86,6 +91,7 @@ public class MD5Util {
 
     /**
      * 校验字符串的md5是否匹配
+     *
      * @param str 字符串
      * @param md5 预匹配的md5
      * @return 是否匹配

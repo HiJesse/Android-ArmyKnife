@@ -2,6 +2,8 @@ package cn.jesse.armyknife;
 
 import android.util.Base64;
 
+import cn.jesse.armyknife.exception.UnsupportedOperationException;
+
 /**
  * Base64转换工具
  * Created by jesse on 16/07/2017.
@@ -10,11 +12,12 @@ import android.util.Base64;
 public class Base64Util {
 
     private Base64Util() {
-        // unused
+        throw new UnsupportedOperationException("cannot be instantiated");
     }
 
     /**
      * 将字符串decode为byte[]
+     *
      * @param base64 字符串
      * @return byte[]
      */
@@ -24,6 +27,7 @@ public class Base64Util {
 
     /**
      * 将byte[] encode为String
+     *
      * @param bytes []
      * @return String
      */
@@ -33,8 +37,9 @@ public class Base64Util {
 
     /**
      * 根据flag将字符串decode为byte[]
+     *
      * @param base64 字符串
-     * @param flag flag
+     * @param flag   flag
      * @return byte[]
      */
     public static byte[] decode(String base64, int flag) {
@@ -43,8 +48,9 @@ public class Base64Util {
 
     /**
      * 根据flag将byte[] encode为String
+     *
      * @param bytes byte[]
-     * @param flag flag
+     * @param flag  flag
      * @return String
      */
     public static String encode(byte[] bytes, int flag) {

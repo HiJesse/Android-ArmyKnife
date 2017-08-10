@@ -12,6 +12,8 @@ import android.util.Log;
 
 import java.util.List;
 
+import cn.jesse.armyknife.exception.UnsupportedOperationException;
+
 /**
  * Android 平台相关工具
  * Created by jesse on 23/07/2017.
@@ -21,7 +23,7 @@ public class PlatformUtil {
     private final static String TAG = PlatformUtil.class.getSimpleName();
 
     private PlatformUtil() {
-        //unused
+        throw new UnsupportedOperationException("cannot be instantiated");
     }
 
     /**
@@ -117,6 +119,7 @@ public class PlatformUtil {
 
     /**
      * 判断wifi是否联通
+     *
      * @param context context
      * @return
      */
@@ -133,6 +136,7 @@ public class PlatformUtil {
 
     /**
      * 判断sd卡是否可用
+     *
      * @return
      */
     public static boolean isSDCardAvailable() {
@@ -142,6 +146,7 @@ public class PlatformUtil {
 
     /**
      * 获取应用version name
+     *
      * @param context
      * @return
      */
@@ -150,7 +155,7 @@ public class PlatformUtil {
         PackageManager manager = context.getApplicationContext().getPackageManager();
         try {
             PackageInfo info = manager.getPackageInfo(context.getApplicationContext().getPackageName(), 0);
-            versionName =  info.versionName;
+            versionName = info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.getMessage(), e);
         }
@@ -160,6 +165,7 @@ public class PlatformUtil {
 
     /**
      * 获取应用version code
+     *
      * @param context
      * @return
      */
@@ -168,7 +174,7 @@ public class PlatformUtil {
         PackageManager manager = context.getApplicationContext().getPackageManager();
         try {
             PackageInfo info = manager.getPackageInfo(context.getApplicationContext().getPackageName(), 0);
-            versionCode =  info.versionCode;
+            versionCode = info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.getMessage(), e);
         }
@@ -178,6 +184,7 @@ public class PlatformUtil {
 
     /**
      * 判断当前应用是否在后台运行
+     *
      * @param context context
      * @return
      */

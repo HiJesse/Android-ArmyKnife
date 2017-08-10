@@ -30,6 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
 import cn.jesse.armyknife.exception.DecryptException;
 import cn.jesse.armyknife.exception.EncryptException;
 import cn.jesse.armyknife.exception.GenerateKeyException;
+import cn.jesse.armyknife.exception.UnsupportedOperationException;
 
 /**
  * AES相关工具
@@ -46,11 +47,12 @@ public class AESUtil {
     private static IvParameterSpec ivParameterSpec = new IvParameterSpec(IV_PARAMETER);
 
     private AESUtil() {
-        // unused
+        throw new UnsupportedOperationException("cannot be instantiated");
     }
 
     /**
      * 设置自定义ivParameter
+     *
      * @param ivParameter byte[]向量
      */
     public static void setIvParameter(byte[] ivParameter) {
@@ -63,12 +65,13 @@ public class AESUtil {
 
     /**
      * 根据长度和种子创建AES key
+     *
      * @param keyLength key长度
-     * @param seed 种子
+     * @param seed      种子
      * @return 字符串key
      * @throws GenerateKeyException
      */
-    public static String generateKey(int keyLength, String seed) throws GenerateKeyException{
+    public static String generateKey(int keyLength, String seed) throws GenerateKeyException {
         KeyGenerator keyGenerator;
         try {
             keyGenerator = KeyGenerator.getInstance(ALGORITHM);
@@ -90,12 +93,13 @@ public class AESUtil {
 
     /**
      * 根据key加密byte数组
-     * @param key 加密所需的key byte[]
+     *
+     * @param key  加密所需的key byte[]
      * @param data 待加密的byte[]
      * @return 加密之后的byte[]
      * @throws EncryptException
      */
-    public static byte[] encrypt(byte[] key, byte[] data) throws EncryptException{
+    public static byte[] encrypt(byte[] key, byte[] data) throws EncryptException {
         Key k = new SecretKeySpec(paddingKey(key), ALGORITHM);
         byte[] raw = k.getEncoded();
         byte[] encrypted;
@@ -120,7 +124,8 @@ public class AESUtil {
 
     /**
      * 根据key解密byte数组
-     * @param key 解密所需的key byte[]
+     *
+     * @param key  解密所需的key byte[]
      * @param data 待解密数据
      * @return 解密后的byte[]
      * @throws DecryptException
@@ -175,12 +180,13 @@ public class AESUtil {
 
     /**
      * 根据key 对文件进行加密
-     * @param key 加密key
+     *
+     * @param key            加密key
      * @param sourceFilePath 待加密文件路径
-     * @param destFilePath 加密成功文件路径
+     * @param destFilePath   加密成功文件路径
      * @throws EncryptException
      */
-    public static void encrypt(byte[] key, String sourceFilePath, String destFilePath) throws EncryptException{
+    public static void encrypt(byte[] key, String sourceFilePath, String destFilePath) throws EncryptException {
         File sourceFile = new File(sourceFilePath);
         File destFile = new File(destFilePath);
 
@@ -227,9 +233,10 @@ public class AESUtil {
 
     /**
      * 根据key 对文件进行解密
-     * @param key 解密key
+     *
+     * @param key            解密key
      * @param sourceFilePath 待解密文件路径
-     * @param destFilePath 解密成功文件路径
+     * @param destFilePath   解密成功文件路径
      * @throws DecryptException
      */
     public static void decrypt(byte[] key, String sourceFilePath, String destFilePath) throws DecryptException {
@@ -280,6 +287,7 @@ public class AESUtil {
 
     /**
      * 当key的位数不足16位时, 自动补充0
+     *
      * @param keyBytes key
      * @return key
      */
