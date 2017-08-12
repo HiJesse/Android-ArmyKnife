@@ -19,7 +19,7 @@ import java.util.List;
 
 public final class FileUtil {
     private static final String TAG = FileUtil.class.getSimpleName();
-    private static final String LINE_SEP = System.getProperty("line.separator");
+    public static final String LINE_SEP = System.getProperty("line.separator");
 
     private FileUtil() {
         throw new UnsupportedOperationException("cannot be instantiated");
@@ -860,7 +860,7 @@ public final class FileUtil {
         return file.length();
     }
 
-    private static boolean isSpace(final String s) {
+    public static boolean isSpace(final String s) {
         if (s == null) {
             return true;
         }
