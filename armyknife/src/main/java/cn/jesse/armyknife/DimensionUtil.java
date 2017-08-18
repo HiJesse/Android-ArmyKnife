@@ -93,19 +93,4 @@ public class DimensionUtil {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
     }
-
-    /**
-     * 获得状态栏的高度
-     *
-     * @param context context
-     * @return pix
-     */
-    public static int getStatusHeight(Context context) {
-        int statusBarHeight = -1;
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
-        }
-        return statusBarHeight;
-    }
 }
